@@ -1,4 +1,4 @@
-# CSC3916 HW3
+# CSC3916 HW4
 
 ## Description:
 A standard REST server (POST,GET,PUT,DELETE) using NodeJS/Express.
