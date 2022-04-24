@@ -208,7 +208,7 @@ router.route('/reviews/:id')
                     res.json({success: false, msg: 'Failed to search for a movie.', err});
                 }
                 else{
-                    if (strlen(movs.title) > 0){//check that a movie title was found
+                    if (movs.title.length > 0){//check that a movie title was found
                         var review = new Review();
                         review.movieTitle = movs.title;
                         review.name = req.user.username;
