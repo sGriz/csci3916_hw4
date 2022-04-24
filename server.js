@@ -203,19 +203,31 @@ router.route('/reviews/:id')
         if (!req.body.quote || !req.body.rating) {
             res.json({success: false, msg: 'Please include a quote and a rating between 0 and 5.'})
         } else {
-            var review = new Review();
-            review.movieTitle = search_title;
-            review.name = req.user.username;
-            review.quote = req.body.quote;
-            review.rating = req.body.rating;
-
-            review.save(function(err){
-                if (err) {
-                    return res.json(err);
+            Movie.findOne({ title: { $regex: search_title, $options: "i" } }, function(err, movs) {
+                if (err || movs==null){
+                    res.json({success: false, msg: 'Failed to search for a movie.', err});
                 }
+                else{
+                    if (movs.title > 0){//check that a movie title was found
+                        var review = new Review();
+                        review.movieTitle = movs.title;
+                        review.name = req.user.username;
+                        review.quote = req.body.quote;
+                        review.rating = req.body.rating;
 
-            var o = getJSONObjectForReview(search_title, req);
-            res.json({success: true, msg: 'Successfully added a review.', o})
+                        review.save(function(err){
+                            if (err) {
+                                return res.json(err);
+                            }
+
+                        var o = getJSONObjectForReview(search_title, req);
+                        res.json({success: true, msg: 'Successfully added a review.', o})
+                        });
+                    }
+                    else{
+                        res.json({success: false, msg: 'Movie title ${search_title} was not found, so a review was not created'});
+                    }
+                }
             });
         }
     }
