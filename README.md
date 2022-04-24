@@ -13,7 +13,7 @@ The React website provides UI for the /signup and /signin routes in our web API.
 ## POSTMAN:
 /*[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/5a945e7031483cf1675c?action=collection%2Fimport#?env%5BHomework3_gryzick%5D=W3sia2V5Ijoiand0X3Rva2VuIiwidmFsdWUiOiJ0b2tlbiBoZXJlIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6InRleHQiLCJzZXNzaW9uVmFsdWUiOiJKV1QuLi4iLCJzZXNzaW9uSW5kZXgiOjB9XQ==)*/
 
-Check that the environment 'Homework4_gryzick' is enabled in Postman. Postman needs to store 'jwt_token' from the '/signin' POST in an environment variable in order for jwt authentication to succeed.
+!! Check that the environment 'jwtToken_env_gryzick' is enabled in Postman. Postman needs to store 'jwt_token' from the '/signin' POST in an environment variable in order for jwt authentication to succeed. !!
 
 ## MongoDB Atlas:
 ![5 movies in the database](assets/db_info.JPG)

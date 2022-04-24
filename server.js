@@ -190,10 +190,10 @@ router.route('/reviews/:id')
         var search_title = req.params['id'].replaceAll("_", " ");//replace the '_' characters with whitespaces for the search functionality
         Review.find({ movieTitle: { $regex: search_title, $options: "i" } }, function(err, revs) {
             if (err || revs==null){
-                res.json({success: false, msg: 'Could not find reviews for ${search_title}.', err});
+                res.json({success: false, msg: 'Could not find reviews', err});
             }
             else{
-                res.json({success: true, msg: 'Successfully searched reviews for ${search_title}.', revs});
+                res.json({success: true, msg: 'Successfully searched reviews', revs});
             }
         });
     }
@@ -208,7 +208,7 @@ router.route('/reviews/:id')
                     res.json({success: false, msg: 'Failed to search for a movie.', err});
                 }
                 else{
-                    if (movs.title > 0){//check that a movie title was found
+                    if (strlen(movs.title) > 0){//check that a movie title was found
                         var review = new Review();
                         review.movieTitle = movs.title;
                         review.name = req.user.username;
@@ -225,7 +225,7 @@ router.route('/reviews/:id')
                         });
                     }
                     else{
-                        res.json({success: false, msg: 'Movie title ${search_title} was not found, so a review was not created'});
+                        res.json({success: false, msg: 'Movie title was not found, so a review was not created'});
                     }
                 }
             });
