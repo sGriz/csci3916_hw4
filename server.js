@@ -14,6 +14,7 @@ var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var User = require('./Users');
 var Movie = require('./Movies');
+var Review = require('./Reviews')
 
 var app = express();
 app.use(cors());
@@ -33,6 +34,26 @@ function getJSONObjectForMovieRequirement(req) {
 
     if (req.body != null) {
         json.body = req.body;
+    }
+
+    if (req.headers != null) {
+        json.headers = req.headers;
+    }
+
+    return json;
+}
+
+function getJSONObjectForReview(search_title, req) {
+    var json = {
+        headers: "No headers",
+        key: process.env.UNIQUE_KEY,
+        body: "No body"
+    };
+
+    if (req.body != null) {
+        json.body = req.body;
+        json.body.append(req.user.username);
+        json.body.append(search_title)
     }
 
     if (req.headers != null) {
@@ -88,16 +109,28 @@ router.post('/signin', function (req, res) {
 });
 
 router.route('/movies/:id')
-    .get(authJwtController.isAuthenticated, function(req, res) {
+    .get( function(req, res) {
         var search_title = req.params['id'].replaceAll("_", " ");//replace the '_' characters with whitespaces for the search functionality
-        Movie.find({ title: { $regex: search_title, $options: "i" } }, function(err, docs) {
-            if (err || docs==null){
+        Movie.find({ title: { $regex: search_title, $options: "i" } }, function(err, movs) {
+            if (err || movs==null){
                 res.json({success: false, msg: 'Could not find a movie.', err});
             }
             else{
-                res.json({success: true, msg: 'Successfully searched for a movie.', docs});
+                res.json({success: true, msg: 'Successfully searched for a movie.', movs});
             }
         });
+
+        //reviews
+        if (req.query.reviews == true){
+            Review.find({ movieTitle: { $regex: search_title, $options: "i" } }, function(err, revs) {
+                if (err || revs==null){
+                    res.append.json({msg: 'Could not find any reviews.', err});
+                }
+                else{
+                    res.append.json({msg: 'Found reviews!', revs});
+                }
+            });
+        }
     }
     )
     .delete(authJwtController.isAuthenticated, function(req, res) {
@@ -149,6 +182,55 @@ router.route('/movies')
             res.json({success: true, msg: 'Successfully added a movie.', o})
             });
         }
+    }
+    );
+
+router.route('/reviews/:id')
+    .get( function(req, res) {
+        var search_title = req.params['id'].replaceAll("_", " ");//replace the '_' characters with whitespaces for the search functionality
+        Review.find({ movieTitle: { $regex: search_title, $options: "i" } }, function(err, revs) {
+            if (err || revs==null){
+                res.json({success: false, msg: 'Could not find reviews for ${search_title}.', err});
+            }
+            else{
+                res.json({success: true, msg: 'Successfully searched reviews for ${search_title}.', revs});
+            }
+        });
+    }
+    )
+    .post(authJwtController.isAuthenticated, function(req, res) {
+        var search_title = req.params['id'].replaceAll("_", " ");//replace the '_' characters with whitespaces for the search functionality
+        if (!req.body.quote || !req.body.rating) {
+            res.json({success: false, msg: 'Please include a quote and a rating between 0 and 5.'})
+        } else {
+            var review = new Review();
+            review.movieTitle = search_title;
+            review.name = req.user.username;
+            review.quote = req.body.quote;
+            review.rating = req.body.rating;
+
+            review.save(function(err){
+                if (err) {
+                    return res.json(err);
+                }
+
+            var o = getJSONObjectForReview(search_title, req);
+            res.json({success: true, msg: 'Successfully added a review.', o})
+            });
+        }
+    }
+    );
+
+router.route('/reviews')
+    .get( function(req, res) {
+        Review.find( function(err, revs) {
+            if (err || revs==null){
+                res.json({success: false, msg: 'Could not find any reviews.', err});
+            }
+            else{
+                res.json({success: true, msg: 'Successfully searched for reviews.', revs});
+            }
+        });
     }
     );
 
