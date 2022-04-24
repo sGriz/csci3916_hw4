@@ -97,7 +97,7 @@ router.route('/movies/:id')
                 res.json({success: false, msg: 'Could not find a movie.', err});
             }
             else{
-                if (req.query.reviews == true){//reviews
+                if (req.query.reviews === 'true'){//reviews
                     Review.find({ movieTitle: { $regex: search_title, $options: "i" } }, function(err, revs) {
                         if (err){
                             res.json({success: false, msg: 'Error searching for movie reviews.', movs, err});
