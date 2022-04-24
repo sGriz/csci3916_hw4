@@ -43,25 +43,6 @@ function getJSONObjectForMovieRequirement(req) {
     return json;
 }
 
-function getJSONObjectForReview(search_title, req) {
-    var json = {
-        headers: "No headers",
-        key: process.env.UNIQUE_KEY,
-        body: "No body"
-    };
-
-    if (req.body != null) {
-        json.body = req.body;
-        json.body.append(req.user.username);
-        json.body.append(search_title)
-    }
-
-    if (req.headers != null) {
-        json.headers = req.headers;
-    }
-
-    return json;
-}
 
 router.post('/signup', function(req, res) {
     if (!req.body.username || !req.body.password) {
@@ -220,7 +201,7 @@ router.route('/reviews/:id')
                                 return res.json(err);
                             }
 
-                        var o = getJSONObjectForReview(search_title, req);
+                        var o = getJSONObjectForMovieRequirement(req);
                         res.json({success: true, msg: 'Successfully added a review.', o})
                         });
                     }
