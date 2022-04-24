@@ -97,21 +97,21 @@ router.route('/movies/:id')
                 res.json({success: false, msg: 'Could not find a movie.', err});
             }
             else{
-                res.json({success: true, msg: 'Successfully searched for a movie.', movs});
-            }
-        });
-
-        //reviews
-        if (req.query.reviews == true){
-            Review.find({ movieTitle: { $regex: search_title, $options: "i" } }, function(err, revs) {
-                if (err || revs==null){
-                    res.append.json({msg: 'Could not find any reviews.', err});
+                if (req.query.reviews == true){//reviews
+                    Review.find({ movieTitle: { $regex: search_title, $options: "i" } }, function(err, revs) {
+                        if (err){
+                            res.json({success: false, msg: 'Error searching for movie reviews.', movs, err});
+                        }
+                        else{
+                            res.json({msg: 'Successfully searched for a movie and reviews.', movs, revs});
+                        }
+                    });
                 }
                 else{
-                    res.append.json({msg: 'Found reviews!', revs});
+                    res.json({success: true, msg: 'Successfully searched for a movie.', movs});
                 }
-            });
-        }
+            }
+        });
     }
     )
     .delete(authJwtController.isAuthenticated, function(req, res) {
