@@ -90,7 +90,7 @@ router.post('/signin', function (req, res) {
 });
 
 router.route('/movies/:id')
-    .get( function(req, res) {
+    .get(authJwtController.isAuthenticated, function(req, res) {
         var search_title = req.params['id'].replaceAll("_", " ");//replace the '_' characters with whitespaces for the search functionality
         Movie.find({ title: { $regex: search_title, $options: "i" } }, function(err, movs) {
             if (err || movs==null){
@@ -167,7 +167,7 @@ router.route('/movies')
     );
 
 router.route('/reviews/:id')
-    .get( function(req, res) {
+    .get(authJwtController.isAuthenticated, function(req, res) {
         var search_title = req.params['id'].replaceAll("_", " ");//replace the '_' characters with whitespaces for the search functionality
         Review.find({ movieTitle: { $regex: search_title, $options: "i" } }, function(err, revs) {
             if (err || revs==null){
@@ -215,7 +215,7 @@ router.route('/reviews/:id')
     );
 
 router.route('/reviews')
-    .get( function(req, res) {
+    .get(authJwtController.isAuthenticated, function(req, res) {
         Review.find( function(err, revs) {
             if (err || revs==null){
                 res.json({success: false, msg: 'Could not find any reviews.', err});
