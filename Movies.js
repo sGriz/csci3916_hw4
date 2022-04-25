@@ -27,7 +27,8 @@ var MovieSchema = new Schema({
             type: [actorSchema],
             required: true,
             validate: v => Array.isArray(v) && v.length == 3
-            }
+            },
+    imageUrl: { type: String, required: true }
 });
 
 //return the model to server
