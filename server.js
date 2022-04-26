@@ -103,7 +103,8 @@ router.route('/movies/:id')
                             res.json({success: false, msg: 'Error searching for movie reviews.', movs, err});
                         }
                         else{
-                            res.json({msg: 'Successfully searched for a movie and reviews.', movs, revs});
+                            var avgRating = $sum(revs.rating);
+                            res.json({msg: 'Successfully searched for a movie and reviews.', movs, revs, avgRating});
                         }
                     });
                 }
