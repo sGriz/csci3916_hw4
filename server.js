@@ -172,14 +172,13 @@ router.route('/movies')
     }
     )
     .get(authJwtController.isAuthenticated, function(req, res) {
-        var search_title = req.params['id'].replaceAll("_", " ");//replace the '_' characters with whitespaces for the search functionality
-        Movie.find({ title: { $regex: search_title, $options: "i" } }, function(err, movs) {
+        Movie.find( function(err, movs) {
             if (err || movs==null){
                 res.json({success: false, msg: 'Could not find any movies.', err});
             }
             else{
                 if (req.query.reviews === 'true'){//reviews
-                    Review.find({ movieTitle: { $regex: search_title, $options: "i" } }, function(err, revs) {
+                    Review.find( function(err, revs) {
                         if (err){
                             res.json({success: false, msg: 'Error searching for movie reviews.', movs, err});
                         }
