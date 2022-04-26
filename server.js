@@ -183,13 +183,7 @@ router.route('/movies')
                             res.json({success: false, msg: 'Error searching for movie reviews.', movs, err});
                         }
                         else{
-                            var sumRating = 0;
-                            var avgRating = 0;
-                            for (i=0; i<revs.length ;i++){
-                                avgRating += revs[i].rating;
-                            }
-                            avgRating = (sumRating / revs.length);
-                            res.json({msg: 'Successfully searched for movies and reviews.', movs, revs, avgRating});
+                            res.json({msg: 'Successfully searched for movies and reviews.', movs, revs});
                         }
                     });
                 }
