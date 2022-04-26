@@ -148,14 +148,15 @@ router.route('/movies/:id')
 
 router.route('/movies')
     .post(authJwtController.isAuthenticated, function(req, res) {
-        if (!req.body.title || !req.body.year || !req.body.genre || !req.body.actors) {
-            res.json({success: false, msg: 'Please include a title, year, genre, and three actors (actor names and character names) to add a movie to the database.'})
+        if (!req.body.title || !req.body.year || !req.body.genre || !req.body.actors || !req.body.imagUrl) {
+            res.json({success: false, msg: 'Please include a title, year, genre, image url, and three actors (actor names and character names) to add a movie to the database.'})
         } else {
             var movie = new Movie();
             movie.title = req.body.title;
             movie.year = req.body.year;
             movie.genre = req.body.genre;
             movie.actors = req.body.actors;
+            movie.imageUrl = req.body.imageUrl;
 
             movie.save(function(err){
                 if (err) {
