@@ -103,7 +103,12 @@ router.route('/movies/:id')
                             res.json({success: false, msg: 'Error searching for movie reviews.', movs, err});
                         }
                         else{
-                            var avgRating = $sum(revs.rating);
+                            var sumRating = 0;
+                            var avgRating = 0;
+                            for (i=0; i<revs.length ;i++){
+                                avgRating += revs[i].rating;
+                            }
+                            avgRating = (sumRating / revs.length);
                             res.json({msg: 'Successfully searched for a movie and reviews.', movs, revs, avgRating});
                         }
                     });
@@ -164,6 +169,36 @@ router.route('/movies')
             res.json({success: true, msg: 'Successfully added a movie.', o})
             });
         }
+    }
+    )
+    .get(authJwtController.isAuthenticated, function(req, res) {
+        var search_title = req.params['id'].replaceAll("_", " ");//replace the '_' characters with whitespaces for the search functionality
+        Movie.find({ title: { $regex: search_title, $options: "i" } }, function(err, movs) {
+            if (err || movs==null){
+                res.json({success: false, msg: 'Could not find any movies.', err});
+            }
+            else{
+                if (req.query.reviews === 'true'){//reviews
+                    Review.find({ movieTitle: { $regex: search_title, $options: "i" } }, function(err, revs) {
+                        if (err){
+                            res.json({success: false, msg: 'Error searching for movie reviews.', movs, err});
+                        }
+                        else{
+                            var sumRating = 0;
+                            var avgRating = 0;
+                            for (i=0; i<revs.length ;i++){
+                                avgRating += revs[i].rating;
+                            }
+                            avgRating = (sumRating / revs.length);
+                            res.json({msg: 'Successfully searched for movies and reviews.', movs, revs, avgRating});
+                        }
+                    });
+                }
+                else{
+                    res.json({success: true, msg: 'Successfully searched for movies.', movs});
+                }
+            }
+        });
     }
     );
 
